@@ -14,5 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    $dbconnect = DB::connection()->getPDO();
+    $dbname = DB::connection()->getDatabaseName();
     return view('welcome');
 });
