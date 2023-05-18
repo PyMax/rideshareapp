@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TripAccepted;
+use App\Events\TripEnded;
+use App\Events\TripLocationUpdated;
+use App\Events\TripStarted;
 use App\Models\Trip;
 use Illuminate\Http\Request;
 
@@ -36,7 +40,7 @@ class TripController extends Controller
 
     public function accept(Request $request, Trip $trip)
     {
-        // a dirver accepts a trip
+        // a driver accepts a trip
         $request->validate([
             'driver_location' => 'required',
         ]);
@@ -46,6 +50,8 @@ class TripController extends Controller
             'driver_location' => $request->driver_location
         ]);
         $trip->load('driver.user');
+
+        TripAccepted::dispatch($trip, $request->user());
         return $trip;
     }
 
@@ -54,6 +60,8 @@ class TripController extends Controller
         // driver has started taking passenger to destination
         $trip->update(['is_started' => true]);
         $trip->load('driver.user');
+
+        TripStarted::dispatch($trip, $request->user());
         return $trip;
     }
 
@@ -63,6 +71,7 @@ class TripController extends Controller
 
         $trip->update(['is_complete' => true]);
         $trip->load('driver.user');
+        TripEnded::dispatch($trip, $request->user());
         return $trip;
     }
 
@@ -78,6 +87,7 @@ class TripController extends Controller
             'driver_location' => $request->driver_location
         ]);
         $trip->load('driver.user');
+        TripLocationUpdated::dispatch($trip, $request->user());
         return $trip;
     }
 }
