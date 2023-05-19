@@ -27,3 +27,6 @@ npm run dev
 ```sh
 npm run build
 ```
+
+npm run from docker image using docker-compose
+docker-compose run --rm frontend cd /src/frontend | npm run dev
