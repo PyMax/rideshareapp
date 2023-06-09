@@ -17,10 +17,10 @@ use App\Http\Controllers\TripController;
 |
 */
 
-Route::post('/login', [LoginController::class, 'submit']);
-
-Route::post('/login/verify', [LoginController::class, 'verify']);
-
+//Route::group(['middleware' => 'cors'], function() {
+    Route::post('/login', [LoginController::class, 'submit']);
+    Route::post('/login/verify', [LoginController::class, 'verify']);
+//});
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('driver', [DriverController::class, 'show']);
