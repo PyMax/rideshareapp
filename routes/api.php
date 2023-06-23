@@ -20,6 +20,9 @@ use App\Http\Controllers\TripController;
 //Route::group(['middleware' => 'cors'], function() {
     Route::post('/login', [LoginController::class, 'submit']);
     Route::post('/login/verify', [LoginController::class, 'verify']);
+    Route::get('/user', function (Request $request){
+        return $request->user();
+    });
 //});
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
@@ -32,8 +35,4 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('/trip/{trip}/start', [TripController::class, 'start']);
     Route::post('/trip/{trip}/end', [TripController::class, 'end']);
     Route::post('/trip/{trip}/location', [TripController::class, 'location']);
-
-    Route::get('/user', function (Request $request){
-        return $request->user();
-    });
 });

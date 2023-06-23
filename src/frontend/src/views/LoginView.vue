@@ -43,7 +43,6 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue';
-import { computed } from 'vue';
 
 const router = useRouter()
 
@@ -56,20 +55,20 @@ const waitingOnVerification = ref(false);
 
 onMounted(() => {
     if(localStorage.getItem('token')){
-        router.push({name : 'index'})
+        router.push({name : 'landing'})
     }
 })
 
-const formattedCredentials = computed(() => {
+const getFormattedCredentials = () => {
     return {
         phone: credentials.phone.replaceAll(' ', '').replace('(','').replace(')', '').replace('-',''),
         login_code: credentials.login_code
     }
-})
+};
 
 const handleLogin = (phone) => {
     console.log(phone.value)
-    axios.post('http://localhost:8001/api/login', formattedCredentials)
+    axios.post('http://localhost:8001/api/login', getFormattedCredentials())
     .then(response => {
         waitingOnVerification.value = true;
     })
@@ -80,11 +79,11 @@ const handleLogin = (phone) => {
 }
 
 const handleVerification = (login_code) => {
-    axios.post('http://localhost:8001/api/login/verify', formattedCredentials).then(response => {
+    axios.post('http://localhost:8001/api/login/verify', getFormattedCredentials()).then(response => {
         console.log(response.data)
         localStorage.setItem('token', response.data)
         router.push({
-            name : 'index'
+            name : 'landing'
         })
     }).catch(error => {
         console.log(error)
