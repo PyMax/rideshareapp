@@ -36,7 +36,7 @@ class TripStarted
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('passenger_' . $this->user->id)
+            new Channel('passenger_' . $this->user->id)
         ];
     }
 }
