@@ -34,11 +34,14 @@ import Echo from 'laravel-echo'
 import Pusher  from 'pusher-js'
 import { useTripStore } from '@/stores/trip';
 import { useLocationStore } from '@/stores/location'
+import http from '@/helpers/http' 
+import { useRouter } from 'vue-router'
 
 const trip = useTripStore()
 const location = useLocationStore()
 const title = ref('Waiting for ride request...')
 const gMap = ref(null)
+const router = useRouter()
 
 const handleDeclineTrip = () => {
     trip.reset()
@@ -49,7 +52,20 @@ const handleAcceptTrip = () => {
     http().post(`/api/trip/${trip.id}/accept`, {
         driver_location: location.current.geometry
     }).then((response) => {
-        
+        location.$patch({
+            destination: {
+                name: 'Passenger',
+                geometry: response.data.origin
+            }
+        })
+
+        router.push({
+            name: 'driving',
+        })
+    })
+
+    .catch((error) => {
+        console.error(error)
     })
 }
 
@@ -69,7 +85,6 @@ onMounted(async () => {
     echo.channel('drivers').listen('TripCreated', (e) => {
         title.value = 'Ride requested:'
         trip.$patch(e.trip)
-        console.log('TripCreated', e)
         setTimeout(initMapDirections, 2000);
     });
 })

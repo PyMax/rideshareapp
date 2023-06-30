@@ -35,5 +35,15 @@ export const useLocationStore = defineStore('location', () => {
     }
   }
 
-  return { destination, current, updateCurrentLocation}
+  const reset = () => {
+    destination.name = ''
+    destination.address = ''
+    destination.geometry.lat = ''
+    destination.geometry.lng = ''
+
+    current.geometry.lat = ''
+    current.geometry.lng = ''
+  }
+
+  return { destination, current, updateCurrentLocation, reset}
 });

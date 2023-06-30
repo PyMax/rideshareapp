@@ -6,6 +6,7 @@ import MapView from '@/views/MapView.vue'
 import TripView from '@/views/TripView.vue'
 import DriverView from '@/views/DriverView.vue'
 import StandbyView from '@/views/StandbyView.vue'
+import DrivingView from '@/views/DrivingView.vue'
 import axios from 'axios';
 
 const router = createRouter({
@@ -45,6 +46,11 @@ const router = createRouter({
       path: '/standby',
       name: 'standby',
       component: StandbyView
+    },
+    {
+      path: '/driving',
+      name: 'driving',
+      component: DrivingView
     }
   ]
 })
