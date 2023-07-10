@@ -23,6 +23,7 @@
 import {useTripStore} from '@/stores/trip'
 import { useLocationStore } from '../stores/location';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 
@@ -30,6 +31,7 @@ const location = useLocationStore()
 const trip = useTripStore()
 const title = ref('Waiting on a driver...')
 const message = ref('When a driver accepts a trip, info will appear here');
+const router = useRouter()
 
 const currentIcon = {
     url: 'https://openmoji.org/data/color/svg/1F698.svg',
@@ -68,7 +70,32 @@ onMounted(async () => {
     }).listen('TripLocationUpdated', (e) => {
         trip.$patch(e.trip)
         console.log(e)
-    });
+    }).listen('TripStarted', (e) => {
+        trip.$patch(e.trip)
+
+        location.$patch({
+            current: {
+                geometry: e.trip.destination
+            }
+        })
+
+        title.value = "You are on the way!"
+        message.value = `You are headed to ${e.trip.destination_name}`
+    }).listen('TripEnded', (e) => {
+        trip.$patch(e.trip)
+
+        title.value = "You are arrived";
+        message.value = `Hope you enjoyed your ride with ${e.trip.driver.user.name}`
+
+        setTimeout(() => {
+            trip.reset()
+            location.reset()
+
+            router.push({
+                name: 'landing'
+            })
+        }, 7000);
+    })
 })
 
 
